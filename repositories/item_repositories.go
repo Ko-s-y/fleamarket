@@ -1,10 +1,14 @@
 package repositories
 
-import "fleamarket/models"
+import (
+	"errors"
+	"fleamarket/models"
+)
 
 // IItemRepository インターフェースは、アイテムリポジトリの契約を定義
 type IItemRepository interface {
 	FindAll() (*[]models.Item, error) // すべてのアイテムを取得するmethod
+	FindById(itemId uint) (*models.Item, error)
 }
 
 // ItemMemoryRepository 構造体は、IItemRepository のメモリ内実装
@@ -20,4 +24,13 @@ func NewItemMemoryRepository(items []models.Item) IItemRepository {
 // FindAll メソッドは、リポジトリに保存されているすべてのアイテムを取得
 func (r *ItemMemoryRepository) FindAll() (*[]models.Item, error) {
 	return &r.items, nil // アイテムと nil エラーを返す
+}
+
+func (r *ItemMemoryRepository) FindById(itemId uint) (*models.Item, error) {
+	for _, v := range r.items {
+		if v.ID == itemId {
+			return &v, nil
+		}
+	}
+	return nil, errors.New("Item not found")
 }
