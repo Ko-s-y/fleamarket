@@ -8,6 +8,7 @@ import (
 // IItemService インターフェースは、アイテムサービスの契約を定義
 type IItemService interface {
 	FindAll() (*[]models.Item, error) // すべてのアイテムを取得するmethod
+	FindById(itemId uint) (*models.Item, error)
 }
 
 // ItemService 構造体は、IItemService を実装
@@ -23,4 +24,8 @@ func NewItemService(repository repositories.IItemRepository) IItemService {
 // FindAll メソッドは、リポジトリの FindAll() メソッドを呼び出し、その結果を返す
 func (s *ItemService) FindAll() (*[]models.Item, error) {
 	return s.repository.FindAll()
+}
+
+func (s *ItemService) FindById(itemId uint) (*models.Item, error) {
+	return s.repository.FindById(itemId)
 }
