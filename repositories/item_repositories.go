@@ -9,6 +9,7 @@ import (
 type IItemRepository interface {
 	FindAll() (*[]models.Item, error) // すべてのアイテムを取得するmethod
 	FindById(itemId uint) (*models.Item, error)
+	Create(newItem models.Item) (*models.Item, error)
 }
 
 // ItemMemoryRepository 構造体は、IItemRepository のメモリ内実装
@@ -33,4 +34,10 @@ func (r *ItemMemoryRepository) FindById(itemId uint) (*models.Item, error) {
 		}
 	}
 	return nil, errors.New("Item not found")
+}
+
+func (r *ItemMemoryRepository) Create(newItem models.Item) (*models.Item, error) {
+	newItem.ID = uint(len(r.items) + 1)
+	r.items = append(r.items, newItem)
+	return &newItem, nil
 }
