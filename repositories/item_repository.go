@@ -85,14 +85,27 @@ func (r *ItemRepository) Create(newItem models.Item) (*models.Item, error) {
 	return &newItem, nil
 }
 
-// Delete implements IItemRepository.
-func (r *ItemRepository) Delete(itemID uint) error {
-	panic("unimplemented")
-}
-
 // FindAll implements IItemRepository.
 func (r *ItemRepository) FindAll() (*[]models.Item, error) {
-	panic("unimplemented")
+	var items []models.Item
+	result := r.db.Find(&items)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &items, nil
+}
+
+// FindById implements IItemRepository.
+func (r *ItemRepository) FindById(itemId uint) (*models.Item, error) {
+	var item models.Item
+	result := r.db.First(&item, itemId)
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			return nil, errors.New("Item not found")
+		}
+		return nil, result.Error
+	}
+	return &item, nil
 }
 
 // Update implements IItemRepository.
@@ -100,7 +113,7 @@ func (r *ItemRepository) Update(updateItem models.Item) (*models.Item, error) {
 	panic("unimplemented")
 }
 
-// FindById implements IItemRepository.
-func (r *ItemRepository) FindById(itemID uint) (*models.Item, error) {
+// Delete implements IItemRepository.
+func (r *ItemRepository) Delete(itemID uint) error {
 	panic("unimplemented")
 }
