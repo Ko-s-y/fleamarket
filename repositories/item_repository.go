@@ -76,7 +76,6 @@ func NewItemRepository(db *gorm.DB) IItemRepository {
 	return &ItemRepository{db: db}
 }
 
-// Create implements IItemRepository.
 func (r *ItemRepository) Create(newItem models.Item) (*models.Item, error) {
 	result := r.db.Create(&newItem)
 	if result.Error != nil {
@@ -95,7 +94,6 @@ func (r *ItemRepository) FindAll() (*[]models.Item, error) {
 	return &items, nil
 }
 
-// FindById implements IItemRepository.
 func (r *ItemRepository) FindById(itemId uint) (*models.Item, error) {
 	var item models.Item
 	result := r.db.First(&item, itemId)
@@ -108,9 +106,12 @@ func (r *ItemRepository) FindById(itemId uint) (*models.Item, error) {
 	return &item, nil
 }
 
-// Update implements IItemRepository.
 func (r *ItemRepository) Update(updateItem models.Item) (*models.Item, error) {
-	panic("unimplemented")
+	result := r.db.Save(&updateItem)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &updateItem, nil
 }
 
 // Delete implements IItemRepository.
