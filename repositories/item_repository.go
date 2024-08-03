@@ -13,7 +13,7 @@ type IItemRepository interface {
 	FindById(itemId uint) (*models.Item, error)
 	Create(newItem models.Item) (*models.Item, error)
 	Update(updateItem models.Item) (*models.Item, error)
-	Delete(itemID uint) error
+	Delete(itemId uint) error
 }
 
 // ItemMemoryRepository 構造体は、IItemRepository のメモリ内実装
@@ -56,9 +56,9 @@ func (r *ItemMemoryRepository) Update(updateItem models.Item) (*models.Item, err
 	return nil, errors.New("Unexpected error")
 }
 
-func (r *ItemMemoryRepository) Delete(itemID uint) error {
+func (r *ItemMemoryRepository) Delete(itemId uint) error {
 	for i, v := range r.items {
-		if v.ID == itemID {
+		if v.ID == itemId {
 			r.items = append(r.items[:i], r.items[i+1:]...)
 			return nil
 		}
@@ -114,7 +114,15 @@ func (r *ItemRepository) Update(updateItem models.Item) (*models.Item, error) {
 	return &updateItem, nil
 }
 
-// Delete implements IItemRepository.
-func (r *ItemRepository) Delete(itemID uint) error {
-	panic("unimplemented")
+func (r *ItemRepository) Delete(itemId uint) error {
+	deleteItem, err := r.FindById(itemId)
+	if err != nil {
+		return err
+	}
+
+	result := r.db.Delete(&deleteItem) // 論理削除(gormデフォルト)で行いたいため、Unscoped().Delete(&deleteItem)とはしない
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
