@@ -15,7 +15,7 @@ type AuthService struct {
 	repository repositories.IAuthRepository
 }
 
-func NewAuthRepository(repository repositories.IAuthRepository) IAuthService {
+func NewAuthService(repository repositories.IAuthRepository) IAuthService {
 	return &AuthService{repository: repository}
 }
 
@@ -28,5 +28,5 @@ func (s *AuthService) Signup(email string, password string) error {
 		Email:    email,
 		Password: string(hashedPassword),
 	}
-	return user
+	return s.repository.CreateUser(user)
 }
