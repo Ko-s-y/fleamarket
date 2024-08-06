@@ -31,6 +31,7 @@ func main() {
 	authController := controllers.NewAuthServiceController(authService)
 	authRouter := r.Group("/auth")
 	authRouter.POST("/signup", authController.Signup)
+	authRouter.POST("/login", authController.Login)
 
 	r.Run("localhost:8080") // 0.0.0.0:8080 でサーバーを立てます。
 }
