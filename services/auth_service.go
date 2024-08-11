@@ -46,10 +46,15 @@ func (s *AuthService) Login(email string, password string) (*string, error) {
 		return nil, err
 	}
 
-	return &foundUser.Email, nil
+	token, err := CreateToken(foundUser.ID, foundUser.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
 }
 
-func CreateToken(userId, uint, email string) (*string, error) {
+func CreateToken(userId uint, email string) (*string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":   userId,
 		"email": email,
