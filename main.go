@@ -9,11 +9,10 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func main() {
-	infra.Initialize()
-	db := infra.SetupDB()
+func setupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
 	r.Use(cors.Default())
 
@@ -40,5 +39,13 @@ func main() {
 	itemRouterWithAuth := r.Group("/items", middlewares.AuthMiddleware(authService))
 	itemRouterWithAuth.POST("", itemController.Create)
 
-	r.Run("localhost:8080") // 0.0.0.0:8080 でサーバーを立てます。
+	return r
+}
+
+func main() {
+	infra.Initialize()
+	db := infra.SetupDB()
+	r := setupRouter(db)
+
+	r.Run("localhost:8080")
 }
