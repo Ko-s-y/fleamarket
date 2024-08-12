@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fleamarket/dto"
 	"fleamarket/infra"
 	"fleamarket/models"
+	"fleamarket/services"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -77,4 +80,33 @@ func TestFindAll(t *testing.T) {
 	// アサーション
 	assert.Equal(t, http.StatusOK, w.Code, "Expected status code to be 200")
 	assert.Equal(t, 3, len(res["data"]), "Expected data length to be 3")
+}
+
+func TestCreate(t *testing.T) {
+	// テストのセットアップ
+	router := setup()
+	token, err := services.CreateToken(1, "test1@example.com")
+	assert.Equal(t, nil, err)
+
+	createItemInput := dto.CreateItemInput{
+		Name:        "テストアイテム４",
+		Price:       4000,
+		Description: "Createテスト",
+	}
+	reqBody, _ := json.Marshal(createItemInput)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/items", bytes.NewBuffer(reqBody))
+	req.Header.Set("Authorization", "Bearer "+*token)
+
+	// APIリクエストの実行
+	router.ServeHTTP(w, req)
+
+	// APIの実行結果の取得
+	var res map[string]models.Item
+	json.Unmarshal([]byte(w.Body.String()), &res)
+
+	// アサーション
+	assert.Equal(t, http.StatusCreated, w.Code)
+	assert.Equal(t, uint(4), res["data"].ID)
 }
