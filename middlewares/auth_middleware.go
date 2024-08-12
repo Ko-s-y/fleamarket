@@ -2,14 +2,13 @@ package middlewares
 
 import (
 	"fleamarket/services"
-	"go/token"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(authServvice services.IAuthService) gin.HandlerFunc {
+func AuthMiddleware(authService services.IAuthService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		header := ctx.GetHeader("Authorization")
 		if header == "" {
@@ -23,14 +22,13 @@ func AuthMiddleware(authServvice services.IAuthService) gin.HandlerFunc {
 		}
 
 		tokenString := strings.TrimPrefix(header, "Bearer ")
-		user, err != authService.GetUserFromToken(tokenString)
+		user, err := authService.GetUserFromToken(tokenString)
 		if err != nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		ctx.Set("user", user)
-
 		ctx.Next()
 	}
 }
