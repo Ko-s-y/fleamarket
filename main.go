@@ -7,6 +7,7 @@ import (
 	"fleamarket/repositories"
 	"fleamarket/services"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +15,7 @@ func main() {
 	infra.Initialize()
 	db := infra.SetupDB()
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	// item
 	itemRepository := repositories.NewItemRepository(db)
