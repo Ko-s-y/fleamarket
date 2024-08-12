@@ -3,6 +3,7 @@ package main
 import (
 	"fleamarket/controllers"
 	"fleamarket/infra"
+	"fleamarket/middlewares"
 	"fleamarket/repositories"
 	"fleamarket/services"
 
@@ -21,7 +22,7 @@ func main() {
 	itemRouter := r.Group("/items")
 	itemRouter.GET("", itemController.FindAll)
 	itemRouter.GET("/:id", itemController.FindById)
-	itemRouter.POST("", itemController.Create)
+	// itemRouter.POST("", itemController.Create)
 	itemRouter.PUT("/:id", itemController.Update)
 	itemRouter.DELETE("/:id", itemController.Delete)
 
@@ -32,6 +33,10 @@ func main() {
 	authRouter := r.Group("/auth")
 	authRouter.POST("/signup", authController.Signup)
 	authRouter.POST("/login", authController.Login)
+
+	// authmiddlewareを利用した定義
+	itemRouterWithAuth := r.Group("/items", middlewares.AuthMiddleware(authService))
+	itemRouterWithAuth.POST("", itemController.Create)
 
 	r.Run("localhost:8080") // 0.0.0.0:8080 でサーバーを立てます。
 }
