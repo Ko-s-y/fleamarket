@@ -1,9 +1,13 @@
 package repositories
 
-import "fleamarket/models"
+import (
+	"errors"
+	"fleamarket/models"
+)
 
 type IItemRepository interface {
 	FindAll() (*[]models.Item, error)
+	FindById(id uint) (*models.Item, error)
 }
 
 type ItemMemoryRepository struct {
@@ -18,4 +22,14 @@ func NewItemMemoryRepository(items []models.Item) IItemRepository {
 
 func (r *ItemMemoryRepository) FindAll() (*[]models.Item, error) {
 	return &r.items, nil
+}
+
+func (r *ItemMemoryRepository) FindById(id uint) (*models.Item, error) {
+	for _, item := range r.items {
+		if item.ID == id {
+			return &item, nil
+		}
+	}
+
+	return nil, errors.New("item not found")
 }
