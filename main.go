@@ -27,6 +27,7 @@ func main() {
 	})
 
 	r.GET("/items", itemController.FindAll)
+	r.GET("/items/:id", itemController.FindById)
 
 	r.Run("localhost:8080") // listen and serve on 0.0.0.0:8080
 }

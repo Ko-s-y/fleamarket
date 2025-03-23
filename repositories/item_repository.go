@@ -25,9 +25,9 @@ func (r *ItemMemoryRepository) FindAll() (*[]models.Item, error) {
 }
 
 func (r *ItemMemoryRepository) FindById(id uint) (*models.Item, error) {
-	for _, item := range r.items {
-		if item.ID == id {
-			return &item, nil
+	for _, v := range r.items {
+		if v.ID == id {
+			return &v, nil
 		}
 	}
 
