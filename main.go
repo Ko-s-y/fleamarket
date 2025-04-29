@@ -2,14 +2,20 @@ package main
 
 import (
 	"fleamarket/controllers"
+	"fleamarket/infra"
 	"fleamarket/models"
 	"fleamarket/repositories"
 	"fleamarket/services"
+	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	infra.Initialize()
+	log.Println(os.Getenv("ENV"))
+
 	items := []models.Item{
 		{ID: 1, Name: "Item 1", Price: 1000, Description: "Description 1", SoldOut: false},
 		{ID: 2, Name: "Item 2", Price: 2000, Description: "Description 2", SoldOut: true},
